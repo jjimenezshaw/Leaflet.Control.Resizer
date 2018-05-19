@@ -24,17 +24,23 @@
 .leaflet-control-resizer-transparent {
     background-color: transparent;
     user-select: none;
-    transition: background-color 0.5s;
+    transition: 0.5s;
+}
+.leaflet-control-resizer-transparent::after {
+    border-color: transparent;
+    transition: 0.5s;
 }
 
+.leaflet-control-resizer-opaque,
 .leaflet-control-resizer-transparent:hover,
 .leaflet-control-resizer-transparent-fakedhover {
-    background-color: #FFFBAA;
+    background-color: #FFFBAACC;
 }
 
-.leaflet-control-resizer-opaque {
-    background-color: #FFFBAA;
-    user-select: none;
+.leaflet-control-resizer-opaque::after,
+.leaflet-control-resizer-transparent:hover::after,
+.leaflet-control-resizer-transparent-fakedhover::after {
+    border-color: #000;
 }
 
 .leaflet-control-resizer-e {
@@ -60,11 +66,43 @@
 }
 
 .leaflet-control-resizer-se {
-    width: 25px;
-    height: 25px;
-    border-top-left-radius: 25px;
+    width: 35px;
+    height: 35px;
+    border-top-left-radius: 35px;
     cursor: se-resize;
     right: 0;
     bottom: 0;
     position: absolute;
+}
+
+.leaflet-control-resizer-e::after,
+.leaflet-control-resizer-s::after,
+.leaflet-control-resizer-se::after {
+    content: '';
+    position: absolute;
+    z-index: 999;
+    border-width: 1px;
+    bottom: 20%;
+    right: 20%;
+}
+
+.leaflet-control-resizer-e::after,
+.leaflet-control-resizer-s::after {
+    width: 60%;
+    height: 60%;
+
+}
+
+.leaflet-control-resizer-se::after {
+    width: 40%;
+    height: 40%;
+}
+
+.leaflet-control-resizer-e::after,
+.leaflet-control-resizer-se::after {
+    border-right-style: solid;
+}
+.leaflet-control-resizer-s:after,
+.leaflet-control-resizer-se::after {
+    border-bottom-style: solid;
 }
