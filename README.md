@@ -55,3 +55,16 @@ Disables the control. Returns `this`.
 
 #### `fakeHover(ms)`
 Fakes the hover effect during `ms` milliseconds, that is, when the mouse passes over the control. Useful when `onlyOnHover` is true, and you want to show where is the control.
+
+### Events
+This class fires the same events as `L.Draggable`. You can get them as usual. For example:
+```javascript
+var southResizer = L.control.resizer({ direction: 's' }).addTo(map);
+L.DomEvent.on(southResizer, 'dragstart', function(e){ console.log(e.type, e) });
+```
+The events are:
+* `down`: When the mouse is clicked over the control.
+* `dragstart`: When the drag starts.
+* `predrag`: On every movement, just before the map resize.
+* `drag`: On every movement, just after the map resize.
+* `dragend`: At the end of the resize.
