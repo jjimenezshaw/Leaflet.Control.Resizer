@@ -10,9 +10,21 @@
             direction: 'e',  // valid values e, s, se
             onlyOnHover: false,
             updateAlways: true,
-            callbackStart: null,
-            callbackMove: null,
-            callbackEnd: null,
+            pan:false,
+        },
+
+        _END: {
+            mousedown: 'mouseup',
+            touchstart: 'touchend',
+            pointerdown: 'touchend',
+            MSPointerDown: 'touchend'
+        },
+
+        _MOVE: {
+            mousedown: 'mousemove',
+            touchstart: 'touchmove',
+            pointerdown: 'touchmove',
+            MSPointerDown: 'touchmove'
         },
 
         initialize: function(options) {
@@ -20,6 +32,17 @@
             this._initialOffsetX = 0;
             this._initialOffsetY = 0;
             this.options.position = 'leaflet-control-resizer-corner-' + this.options.direction;
+            this.enable();
+        },
+
+        enable: function() {
+            this._enabled = true;
+            return this;
+        },
+
+        disable: function() {
+            this._enabled = false;
+            return this;
         },
 
         onAdd: function (map) {
@@ -40,8 +63,10 @@
              * it's too late becuase the event seems to go to the map first, which results in any subsequent motion
              * resulting in map movement even after map.dragging.disable() is called.
              */
+            /*
             L.DomEvent.on(container, 'mouseenter', function (e) { map.dragging.disable(); });
             L.DomEvent.on(container, 'mouseleave', function (e) { map.dragging.enable(); });
+            */
 
             L.DomEvent.on(container, 'mousedown touchstart', this._initResize, this);
 
@@ -50,6 +75,7 @@
 
         onRemove: function(map) {
             L.DomEvent.off(this._container, 'mousedown touchstart', this._initResize, this);
+            L.DomEvent.off(this._container, 'mousedown mouseup click touchstart drag', L.DomEvent.stopPropagation);
         },
 
         fakeHover: function(ms) {
@@ -68,59 +94,76 @@
         },
 
         _initResize: function (e) {
-            var mapCont = this._map.getContainer();
+            if (e._simulated || !this._enabled) { return; }
+
+            if (this._started) return;
+            this._started = true;
+            this._moved = false;
+
             var first = (e.touches && e.touches.length === 1 ? e.touches[0] : e)
 
             L.DomUtil.disableImageDrag();
             L.DomUtil.disableTextSelection();
 
+            this.fire('down', e);
+
+            var mapCont = this._map.getContainer();
             this._initialOffsetX = mapCont.offsetWidth + mapCont.offsetLeft - first.clientX;
             this._initialOffsetY = mapCont.offsetHeight + mapCont.offsetTop - first.clientY;
 
-            L.DomEvent.on(window, 'mouseup touchend', this._stopResizing, this);
-            L.DomEvent.on(this._container, 'mouseup touchend', this._stopResizing, this);
+            L.DomEvent.on(document, this._END[e.type], this._stopResizing, this);
+            L.DomEvent.on(this._container, this._END[e.type], this._stopResizing, this);
 
-            L.DomEvent.on(window, 'mousemove touchmove', this._duringResizing, this);
-
-            if (this.options.callbackStart) {
-                this.options.callbackStart(e);
-            }
-
+            L.DomEvent.on(document, this._MOVE[e.type], this._duringResizing, this);
         },
 
         _duringResizing: function (e) {
-            var mapCont = this._map.getContainer();
+            if (e._simulated) { return; }
+
             var first = (e.touches && e.touches.length === 1 ? e.touches[0] : e)
 
+            L.DomEvent.preventDefault(e);
+
+            if (!this._moved) {
+                this.fire('dragstart', e);
+            }
+            this.fire('predrag', e);
+
+            var mapCont = this._map.getContainer();
             if (this.options.direction.indexOf('e') >=0) {
                 mapCont.style.width = (first.clientX - mapCont.offsetLeft + this._initialOffsetX) + 'px';
+                this._moved = true;
             }
             if (this.options.direction.indexOf('s') >=0) {
                 mapCont.style.height = (first.clientY - mapCont.offsetTop + this._initialOffsetY) + 'px';
+                this._moved = true;
             }
+            this._moved = true;
 
             if (this.options.updateAlways) {
-                this._map.invalidateSize({ pan: false });
-            }
-            if (this.options.callbackMove) {
-                this.options.callbackMove(e);
+                this._map.invalidateSize({ pan: this.options.pan });
             }
 
+            this.fire('drag', e);
         },
 
         _stopResizing: function(e) {
-            L.DomEvent.off(window, 'mousemove touchmove', this._duringResizing, this);
+            if (e._simulated) { return; }
 
-            L.DomEvent.off(window, 'mouseup touchend', this._stopResizing, this);
-            L.DomEvent.off(this._container, 'mouseup touchend', this._stopResizing, this);
+            for (var i in this._MOVE)
+            {
+                L.DomEvent.off(document, this._MOVE[i], this._duringResizing, this);
 
-            this._map.invalidateSize({ pan: false });
-            if (this.options.callbackEnd) {
-                this.options.callbackEnd(e);
+                L.DomEvent.off(document, this._END[i], this._stopResizing, this);
+                L.DomEvent.off(this._container, this._END[i], this._stopResizing, this);
             }
+
+            this._map.invalidateSize({ pan: this.options.pan });
 
             L.DomUtil.enableImageDrag();
             L.DomUtil.enableTextSelection();
+            this._started = false;
+            this.fire('dragend', e);
         }
 
     });

@@ -31,20 +31,14 @@
             center: center,
             zoom: 5
         });
+
         var e = L.control.resizer({ onlyOnHover: true }).addTo(map);
-        L.control.resizer({ direction: 's',
-            callbackStart: function(e) {
-                console.log('Start', e);
-            },
-            callbackMove: function(e) {
-                console.log('Move', e);
-            },
-            callbackEnd: function(e) {
-                console.log('End', e);
-            }
-        }).addTo(map);
-        L.control.resizer({ direction: 'se' }).addTo(map);
-        setTimeout(function() {e.fakeHover(50)}, 1000);
+        var s = L.control.resizer({ direction: 's' }).addTo(map);
+        L.control.resizer({ direction: 'se', pan: true }).addTo(map);
+        setTimeout(function() { e.fakeHover(1000) }, 1000);
+
+        L.DomEvent.on(s, 'down dragstart predrag drag dragend', function(e){ console.log(e.type, e)});
+
     </script>
 </body>
 </html>
