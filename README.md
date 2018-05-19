@@ -54,4 +54,4 @@ Enables the control. Run by default on construction. Returns `this`.
 Disables the control. Returns `this`.
 
 #### `fakeHover(ms)`
-Fakes the hover effect, that is, when the mouse passes over the control. Useful when `onlyOnHover` is true, and you want to show where is the control.
+Fakes the hover effect during `ms` milliseconds, that is, when the mouse passes over the control. Useful when `onlyOnHover` is true, and you want to show where is the control.
