@@ -1,4 +1,5 @@
 # Leaflet.Control.Resizer
+[![NPM version](https://img.shields.io/npm/v/leaflet.control.resizer.svg)](https://www.npmjs.com/package/leaflet.control.resizer)
 [![License](https://img.shields.io/badge/license-BSD--3--Clause-blue.svg?style=flat)](LICENSE)
 [![Leaflet 1.x compatible!](https://img.shields.io/badge/Leaflet%201.x-%E2%9C%93-1EB300.svg?style=flat)](http://leafletjs.com/reference.html)
 
@@ -10,7 +11,7 @@ Control to resize a Leaflet map
 This plugin creates a control to resize your map on the right or bottom side. See that top and left are not a 'resize' but a 'move' inside your DOM... that is another story.
 
 ## Installation
-For now just copy the files `L.Control.Resizer.js` and `L.Control.Resizer.css`. Soon there will be an npm package.
+Using npm for browserify `npm install leaflet.control.resizer` (and `require('leaflet.control.resizer')`), or just download `L.Control.Resizer.js` and `L.Control.Resizer.css` and add a script and link tag for it in your html.
 
 ## Compatibility
 Tested with Leaflet 1.0.3 and 1.3.1. It does not work with 0.7 due to deprecated functionalities. However it is easy to change the code to make it compatible (come on, it is time to update to Leaflet 1.x)
