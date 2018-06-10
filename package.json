@@ -1,0 +1,27 @@
+{
+  "name": "leaflet.control.resizer",
+  "version": "0.0.1",
+  "description": "Control to resize a Leaflet map",
+  "main": "L.Control.Resizer.js",
+  "style": "L.Control.Resizer.css",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jjimenezshaw/Leaflet.Control.Resizer.git"
+  },
+  "keywords": [
+    "Leaflet",
+    "map",
+    "geo",
+    "control",
+    "resize"
+  ],
+  "devDependencies": {
+    "leaflet": "^1.0.3"
+  },
+  "peerDependencies": {
+    "leaflet": "^1.0.3"
+  },
+  "author": "Javier Jimenez Shaw",
+  "readmeFilename": "README.md"
+}
