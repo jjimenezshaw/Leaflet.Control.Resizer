@@ -1,0 +1,6 @@
+.*
+eslint.*
+examples
+package-lock.json
+test
+tsconfig.json
