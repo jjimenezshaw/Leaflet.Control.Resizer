@@ -35,7 +35,7 @@ Just add a control as usual.
 
 ## API
 ### `L.Control.Resizer`
-The main (and only) 'class' involved in this plugin. It exteds `L.Control`, so most of its methods are available. 
+The main (and only) 'class' involved in this plugin. It extends `L.Control`, so most of its methods are available.
 #### `L.control.resizer(options)`
 Creates the control. The arguments are:
 * `options`: `<Object>` specific options for this control.
