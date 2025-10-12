@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "es6"],
+    "module": "commonjs",
+    "noEmit": true
+  },
+  "files": ["./L.Control.Resizer.d.ts"],
+  "include": ["**/*.ts"],
+  "exclude": ["dist"]
+}

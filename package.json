@@ -4,6 +4,7 @@
   "description": "Control to resize a Leaflet map",
   "main": "L.Control.Resizer.js",
   "style": "L.Control.Resizer.css",
+  "types": "L.Control.Resizer.d.ts",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
