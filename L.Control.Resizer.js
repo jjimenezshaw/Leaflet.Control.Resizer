@@ -1,30 +1,37 @@
-'use strict';
+(function(global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined'
+        ? factory(exports, require('leaflet'))
+        : typeof define === 'function' && define.amd
+            ? define(['exports', 'leaflet'], factory)
+            : (global = typeof globalThis !== 'undefined'
+                ? globalThis
+                : global || self, factory(global.LayersTree = {}, global.L));
+})(this, (function(_exports, L) { 'use strict';
 
-(function(L) {
     if (typeof L === 'undefined') {
         throw new Error('Leaflet must be included first');
     }
 
     L.Control.Resizer = L.Control.extend({
         options: {
-            direction: 'e',  // valid values e, s, se
+            direction: 'e', // valid values e, s, se
             onlyOnHover: false,
             updateAlways: true,
-            pan:false,
+            pan: false,
         },
 
         _END: {
             mousedown: 'mouseup',
             touchstart: 'touchend',
             pointerdown: 'touchend',
-            MSPointerDown: 'touchend'
+            MSPointerDown: 'touchend',
         },
 
         _MOVE: {
             mousedown: 'mousemove',
             touchstart: 'touchmove',
             pointerdown: 'touchmove',
-            MSPointerDown: 'touchmove'
+            MSPointerDown: 'touchmove',
         },
 
         initialize: function(options) {
@@ -45,22 +52,22 @@
             return this;
         },
 
-        onAdd: function (map) {
+        onAdd: function(map) {
             this._prepareLocation(map);
 
             var className = 'leaflet-control-resizer';
             var classNameTransp = className + (this.options.onlyOnHover ? '-transparent' : '-opaque');
             var classNameLoc = className + '-' + this.options.direction;
             this._container = L.DomUtil.create('div',
-                                               className + ' ' + classNameTransp + ' ' + classNameLoc,
-                                               map.getContainer());
+                className + ' ' + classNameTransp + ' ' + classNameLoc,
+                map.getContainer());
             var container = this._container;
 
             L.DomEvent.on(container, 'mousedown mouseup click touchstart drag', L.DomEvent.stopPropagation);
 
             /* IE11 seems to process events in the wrong order, so the only way to prevent map movement while dragging the
              * slider is to disable map dragging when the cursor enters the slider (by the time the mousedown event fires
-             * it's too late becuase the event seems to go to the map first, which results in any subsequent motion
+             * it's too late because the event seems to go to the map first, which results in any subsequent motion
              * resulting in map movement even after map.dragging.disable() is called.
              */
             /*
@@ -73,7 +80,7 @@
             return this._container;
         },
 
-        onRemove: function(map) {
+        onRemove: function(_map) {
             L.DomEvent.off(this._container, 'mousedown touchstart', this._initResize, this);
             L.DomEvent.off(this._container, 'mousedown mouseup click touchstart drag', L.DomEvent.stopPropagation);
         },
@@ -93,14 +100,14 @@
             corners[l] = L.DomUtil.create('div', l, container);
         },
 
-        _initResize: function (e) {
+        _initResize: function(e) {
             if (e._simulated || !this._enabled) { return; }
 
             if (this._started) return;
             this._started = true;
             this._moved = false;
 
-            var first = (e.touches && e.touches.length === 1 ? e.touches[0] : e)
+            var first = (e.touches && e.touches.length === 1 ? e.touches[0] : e);
 
             L.DomUtil.disableImageDrag();
             L.DomUtil.disableTextSelection();
@@ -117,10 +124,10 @@
             L.DomEvent.on(document, this._MOVE[e.type], this._duringResizing, this);
         },
 
-        _duringResizing: function (e) {
+        _duringResizing: function(e) {
             if (e._simulated) { return; }
 
-            var first = (e.touches && e.touches.length === 1 ? e.touches[0] : e)
+            var first = (e.touches && e.touches.length === 1 ? e.touches[0] : e);
 
             L.DomEvent.preventDefault(e);
 
@@ -141,7 +148,7 @@
             this._moved = true;
 
             if (this.options.updateAlways) {
-                this._map.invalidateSize({ pan: this.options.pan });
+                this._map.invalidateSize({pan: this.options.pan});
             }
 
             this.fire('drag', e);
@@ -158,19 +165,18 @@
                 L.DomEvent.off(this._container, this._END[i], this._stopResizing, this);
             }
 
-            this._map.invalidateSize({ pan: this.options.pan });
+            this._map.invalidateSize({pan: this.options.pan});
 
             L.DomUtil.enableImageDrag();
             L.DomUtil.enableTextSelection();
             this._started = false;
             this.fire('dragend', e);
-        }
-
+        },
     });
 
     L.Control.Resizer.include(L.Evented.prototype);
 
-    L.control.resizer = function (options) {
+    L.control.resizer = function(options) {
         return new L.Control.Resizer(options);
     };
-})(L);
+}));
